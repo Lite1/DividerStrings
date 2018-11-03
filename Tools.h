@@ -10,5 +10,5 @@ public:
 	
 	static vector<string> divisionStrAtSubStr(string s, int n);
 	
-	static void printSubStrings(vector <string> subStrings);
+	static int getNumLength(int num);
 };

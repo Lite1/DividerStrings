@@ -21,37 +21,54 @@ Tools::~Tools()
 
 vector<string> Tools::divisionStrAtSubStr(string s, int n)
 {
-	 if (s.length() < n)
-	 {
-		 throw invalid_argument("The number of divisions exceeds the number of characters");
-	 }
+	vector <string> subStrings;
+	int LENGTH_MIN_PREFIX = 6;
 
-	 int subStrLength = (int)ceil((double)s.length() / n);
+	if (LENGTH_MIN_PREFIX >= n) {
+		throw invalid_argument("–азмер подстроки меньше или равен минимальному размеру строки");
+	}
 
-	 if (s.length() <= subStrLength * (n - 1)) 
-	 {
-		 throw exception("Cannot split line correctly");
-	 }
+	int amountSubStrings = 1;
+	int numSubString = 0;
+	int residueString = s.length();
 
-	 vector <string> subStrings;
+	while (true) {
+		numSubString++;
 
-	 for (int i = 0; i < n; i++)
-	 {
-		 if (i != n - 1) {
-			 subStrings.push_back(s.substr(subStrLength * i, subStrLength));
-		 }
-		 else {
-			 subStrings.push_back(s.substr(subStrLength * i));
-		 }
-	 }
+		int lengthOfPrefix = 4 + getNumLength(numSubString) + getNumLength(amountSubStrings);
 
-	 return subStrings;
+		if (lengthOfPrefix >= n) {
+			throw overflow_error("Ќевозможно разложить строку");
+		}
+
+		int endIndexForSubstring;
+		if (residueString <= n - lengthOfPrefix) {
+			endIndexForSubstring = residueString;
+			residueString = 0;
+		}
+		else {
+			endIndexForSubstring = n - lengthOfPrefix;
+			residueString -= endIndexForSubstring;
+		}
+
+		subStrings.push_back("[" + numSubString + '/' + amountSubStrings + '] ' + s.substr((numSubString - 1) *  (n - lengthOfPrefix), endIndexForSubstring) + "\n");
+
+
+		if (residueString == 0) {
+			break;
+		}
+
+		if (numSubString == amountSubStrings) {
+			amountSubStrings++;
+			numSubString = 0;
+			residueString = s.length();
+			subStrings.clear();
+		}
+	}
+	return subStrings;
 }
 
-void Tools::printSubStrings(vector<string> subStrings)
+int Tools::getNumLength(int num)
 {
-	for (int i = 0; i < subStrings.size(); i++)
-	{
-		cout << "[" << i + 1 << "/" << subStrings.size() << "] " << subStrings[i] << "\n";
-	}
+	return (int)log10(num) + 1;
 }
